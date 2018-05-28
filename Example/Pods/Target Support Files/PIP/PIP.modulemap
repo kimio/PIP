@@ -1,0 +1,6 @@
+framework module PIP {
+  umbrella header "PIP-umbrella.h"
+
+  export *
+  module * { export * }
+}
