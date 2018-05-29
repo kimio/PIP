@@ -22,10 +22,11 @@ class ViewController: UIViewController {
         pip.addPictureInPicture(configuration: pipConfiguration)
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        pip.updatePipRect(CGRect(x: 0,
+                             y: 0,
+                             width: size.width,
+                             height: size.height))
     }
-
 }
 

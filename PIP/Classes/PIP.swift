@@ -38,13 +38,9 @@ public class PIP {
         configuration.pipHeight = (configuration.basePipView.frame.height / configuration.pipSizePercentage) * (9 / 16)
     }
     
-    public func fullScreen() {
-        let viewFrame = configuration.basePipView.frame
+    public func updatePipRect(_ rect: CGRect) {
         UIView.animate(withDuration: configuration.animateDuration, animations: {
-            self.configuration.viewToPip.frame = CGRect(x: 0,
-                                                      y: 0,
-                                                      width: viewFrame.width,
-                                                      height: viewFrame.height)
+            self.configuration.viewToPip.frame = rect
         })
     }
     
@@ -74,9 +70,7 @@ public class PIP {
                 targetRect.origin.y > 0,
                 targetRect.origin.y + configuration.pipHeight < viewFrame.height {
                 
-                UIView.animate(withDuration: configuration.animateDuration, animations: {
-                    self.configuration.viewToPip.frame = targetRect
-                })
+                updatePipRect(targetRect)
             }
             break
         case .ended:
@@ -92,14 +86,16 @@ public class PIP {
             }
             if xPosition == viewFrame.width - configuration.pipWidth,
                 yPosition == 0 {
-                fullScreen()
+                let viewFrame = configuration.basePipView.frame
+                updatePipRect(CGRect(x: 0,
+                                     y: 0,
+                                     width: viewFrame.width,
+                                     height: viewFrame.height))
             } else {
-                UIView.animate(withDuration: configuration.animateDuration, animations: {
-                    self.configuration.viewToPip.frame = CGRect(x: xPosition,
-                                                              y: yPosition,
-                                                              width: self.configuration.pipWidth,
-                                                              height: self.configuration.pipHeight)
-                })
+                updatePipRect(CGRect(x: xPosition,
+                                     y: yPosition,
+                                     width: configuration.pipWidth,
+                                     height: configuration.pipHeight))
             }
             break
         default: break
