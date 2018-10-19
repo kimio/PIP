@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="vXZ-lx-hvc">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -21,15 +21,35 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tXo-nM-T6i">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tXo-nM-T6i">
                                 <rect key="frame" x="88" y="278" width="199" height="111"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hEw-w8-fCB">
+                                        <rect key="frame" x="148" y="0.0" width="51" height="26"/>
+                                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="26" id="AI7-rm-hen"/>
+                                            <constraint firstAttribute="width" constant="51" id="sUB-cu-Fh5"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="111" id="2v8-Dr-HAF"/>
+                                    <constraint firstAttribute="width" constant="199" id="RHC-nf-4Dg"/>
+                                    <constraint firstItem="hEw-w8-fCB" firstAttribute="top" secondItem="tXo-nM-T6i" secondAttribute="top" id="VgF-kO-n0E"/>
+                                    <constraint firstAttribute="trailing" secondItem="hEw-w8-fCB" secondAttribute="trailing" id="eLg-kT-dZO"/>
+                                </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="tXo-nM-T6i" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="58r-lx-SQf"/>
+                            <constraint firstItem="tXo-nM-T6i" firstAttribute="centerY" secondItem="kh9-bI-dsS" secondAttribute="centerY" id="S5U-6O-jbo"/>
+                        </constraints>
                     </view>
                     <connections>
+                        <outlet property="removeView" destination="hEw-w8-fCB" id="TZX-oh-WKm"/>
                         <outlet property="viewToPip" destination="tXo-nM-T6i" id="zKD-2R-CAv"/>
                     </connections>
                 </viewController>

@@ -8,12 +8,14 @@
 import UIKit
 
 public class PIPConfiguration {
+    
     public var basePipView: UIView
     public var viewToPip: UIView
     public var pipWidth: CGFloat = 0.0
     public var pipHeight: CGFloat = 0.0
     public var animateDuration: TimeInterval = 0.3
     public var pipSizePercentage: CGFloat = 4.0
+    public var removeView: UIView?
     
     public init(viewToPip: UIView) {
         self.viewToPip = viewToPip
@@ -26,12 +28,36 @@ public class PIPConfiguration {
     }
 }
 
+public protocol PIPDelegate: class {
+    func onRemove()
+    func onFullScreen()
+    func onMoveEnded(frame: CGRect)
+}
+
 public class PIP {
     
+    public weak var delegate: PIPDelegate?
     public var configuration: PIPConfiguration!
     private var hangAroundPanGesture: UIPanGestureRecognizer!
     
-    public init() { }
+    public init(configuration: PIPConfiguration) {
+        self.configuration = configuration
+        pipSize()
+        hangAroundPanGesture = UIPanGestureRecognizer(target: self, action: #selector(hangAround(_:)))
+        hangAroundPanGesture.isEnabled = true
+        configuration.viewToPip.addGestureRecognizer(hangAroundPanGesture)
+        configuration.viewToPip.isUserInteractionEnabled = true
+        createRemoveView(configuration: configuration)
+    }
+    
+    private func createRemoveView(configuration: PIPConfiguration) {
+        if let view = configuration.removeView {
+            let removeGesture = UITapGestureRecognizer(target: self, action: #selector(remove(_:)))
+            removeGesture.isEnabled = true
+            view.addGestureRecognizer(removeGesture)
+            view.isUserInteractionEnabled = true
+        }
+    }
     
     private func pipSize() {
         configuration.pipWidth = (configuration.basePipView.frame.width / configuration.pipSizePercentage) * (16 / 9)
@@ -41,16 +67,21 @@ public class PIP {
     public func updatePipRect(_ rect: CGRect) {
         UIView.animate(withDuration: configuration.animateDuration, animations: {
             self.configuration.viewToPip.frame = rect
+            self.configuration.viewToPip.layoutIfNeeded()
+            if let removeView = self.configuration.removeView {
+                var frame: CGRect = removeView.frame
+                frame.origin.x = rect.width - frame.width
+                removeView.frame = frame
+            }
         })
+        
     }
     
-    public func addPictureInPicture(configuration: PIPConfiguration) {
-        self.configuration = configuration
-        pipSize()
-        hangAroundPanGesture = UIPanGestureRecognizer(target: self, action: #selector(hangAround(_:)))
-        hangAroundPanGesture.isEnabled = true
-        configuration.viewToPip.addGestureRecognizer(hangAroundPanGesture)
-        configuration.viewToPip.isUserInteractionEnabled = true
+    @objc func remove(_ gesture: UIPanGestureRecognizer) {
+        configuration.viewToPip.removeFromSuperview()
+        if let delegate = delegate {
+            delegate.onRemove()
+        }
     }
     
     @objc func hangAround(_ gesture: UIPanGestureRecognizer) {
@@ -84,18 +115,24 @@ public class PIP {
             if percentageY > 0.4 {
                 yPosition = viewFrame.height - configuration.pipHeight
             }
+            var endFrame: CGRect
             if xPosition == viewFrame.width - configuration.pipWidth,
                 yPosition == 0 {
                 let viewFrame = configuration.basePipView.frame
-                updatePipRect(CGRect(x: 0,
-                                     y: 0,
-                                     width: viewFrame.width,
-                                     height: viewFrame.height))
+                endFrame = CGRect(x: 0, y: 0,
+                                  width: viewFrame.width,
+                                  height: viewFrame.height)
+                if let delegate = delegate {
+                    delegate.onFullScreen()
+                }
             } else {
-                updatePipRect(CGRect(x: xPosition,
-                                     y: yPosition,
-                                     width: configuration.pipWidth,
-                                     height: configuration.pipHeight))
+                endFrame = CGRect(x: xPosition, y: yPosition,
+                                  width: configuration.pipWidth,
+                                  height: configuration.pipHeight)
+            }
+            updatePipRect(endFrame)
+            if let delegate = delegate {
+                delegate.onMoveEnded(frame: endFrame)
             }
             break
         default: break
